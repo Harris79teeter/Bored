@@ -14,7 +14,7 @@
     "js-confuser": "^1.7.3",
     "ssh2": "^1.15.0",
     "telegraf": "^4.16.3",
-    "webcrack": "latest"
+    "webcrack": "2.15.1"
   },
   "engines": {
     "node": ">=20.0.0"
