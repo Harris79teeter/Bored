@@ -677,7 +677,6 @@ bot.start(async (ctx) => {
 /enc3  → Chinese Obfuscate
 /enc4  → Arab Obfuscate
 /enc5  → Siu Obfuscate
-/enchard → Best obfuscation
 
 📎 Usage Example:
 /enc2 変𝕴 𝖆𝖒 𝖍𝖎𝖒日𝕴 𝖆𝖒 𝖍𝖎𝖒変
@@ -876,7 +875,7 @@ bot.command("enc3", async (ctx) => {
     );
     const obfuscated = await JsConfuser.obfuscate(
       fileContent,
-      getMandarinObfuscationConfig()
+      getJapanxArabObfuscationConfig()
     );
     await updateProgress(ctx, progressMessage, 60, "Code Transformation");
     await fs.writeFile(encryptedPath, obfuscated.code);
