@@ -7,8 +7,66 @@ const axios = require("axios");
 const crypto = require("crypto");
 const { Client } = require("ssh2");
 
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🛡️ [SHIELD] Unhandled Rejection at:', promise, 'Reason:', reason);
+  
+});
+
+process.on('uncaughtException', (error, origin) => {
+  console.error('🛡️ [SHIELD] Uncaught Exception:', error, 'Origin:', origin);
+  
+});
+
+
+const originalSetTimeout = global.setTimeout;
+global.setTimeout = function(fn, delay, ...args) {
+ 
+  return originalSetTimeout(() => {
+    try {
+      if (typeof fn === 'function') fn(...args);
+    } catch (err) {
+      console.error('🛡️ [SHIELD] Timeout callback error caught:', err.message);
+    }
+  }, delay);
+};
+
+
+
 const bot = new Telegraf(config.BOT_TOKEN);
 const userData = {};
+
+const telegrafErrorCatcher = (bot) => {
+
+  bot.catch((err, ctx) => {
+    console.error(`🛡️ [BOT] Error for update ${ctx.update?.update_id || 'unknown'}:`, err.message);
+    
+    try {
+  
+      if (ctx && ctx.reply) {
+        ctx.reply('An error occurred. The bot will continue working.').catch(() => {});
+      }
+    } catch (e) {
+      // Silent fail
+    }
+  });
+
+ 
+  bot.use(async (ctx, next) => {
+    const timeout = 30000; 
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Handler timeout')), timeout);
+    });
+    
+    try {
+      await Promise.race([next(), timeoutPromise]);
+    } catch (err) {
+      console.error('🛡️ [BOT] Middleware timeout/error:', err.message);
+      
+    }
+  });
+  
+  return bot;
+};
 
 const log = (message, error = null) => {
   const timestamp = new Date().toISOString().replace("T", " ").replace("Z", "");
@@ -676,6 +734,7 @@ bot.start(async (ctx) => {
 /enc3  → Chinese Obfuscate
 /enc4  → Arab Obfuscate
 /enc5  → Siu Obfuscate
+/enchard → Best obfuscation type
 
 📎 Usage Example:
 /enc2 変𝕴 𝖆𝖒 𝖍𝖎𝖒日𝕴 𝖆𝖒 𝖍𝖎𝖒変
