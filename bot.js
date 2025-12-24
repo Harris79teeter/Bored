@@ -4,7 +4,6 @@ const path = require("path");
 const JsConfuser = require("js-confuser");
 const config = require("./config");
 const axios = require("axios");
-const { webcrack } = require("webcrack");
 const crypto = require("crypto");
 const { Client } = require("ssh2");
 
