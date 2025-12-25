@@ -6,6 +6,10 @@ const config = require("./config");
 const axios = require("axios");
 const crypto = require("crypto");
 const { Client } = require("ssh2");
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error('🛡️ [SHIELD] Unhandled Rejection at:', promise, 'Reason:', reason);
@@ -2510,6 +2514,20 @@ bot.command("enc", async (ctx) => {
       log(`Temporary file deleted after error: ${encryptedPath}`);
     }
   }
+});
+
+
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    status: 'Bot is running', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime() 
+  });
+});
+
+
+app.listen(PORT, () => {
+  console.log(`✅ Health check server listening on port ${PORT}`);
 });
 
 
